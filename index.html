@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Systematic Review — Reyanda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./theme.js"></script>
+    <script>
+    // Auth gate — redirect to the unified landing if not signed in
+    (function(){
+        var u = localStorage.getItem('reyanda_user');
+        if (!u) { location.href = '/'; return; }
+        try { var user = JSON.parse(u); document.body.setAttribute('data-user', user.email || ''); } catch(e) {}
+    })();
+    </script>
+    <style>
+      /* Systematic Review owns a teal mark instead of the shrimp coral */
+      .nav-logo-icon, .room-item.current .room-ico { background: linear-gradient(135deg,#14b8a6 0%,#0e7490 100%) !important; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+        <button class="nav-rooms" id="roomsBtn" onclick="window.toggleRooms(event)" title="Switch room" aria-label="Switch room">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </button>
+        <a href="./" class="nav-logo">
+            <div class="nav-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"><path d="M3 4h18l-7 8v7l-4-2v-5z"/></svg></div>
+            <span class="nav-logo-text">Systematic Review</span>
+        </a>
+        <span class="nav-divider"></span>
+        <div class="nav-links">
+            <a href="#" class="nav-link" onclick="window.showReview();return false">Strategy</a>
+        </div>
+        </div>
+        <div class="nav-right">
+            <div class="nav-account-wrap">
+                <button class="nav-account" id="accountBtn" onclick="window.toggleAccount(event)" aria-haspopup="true" aria-label="Account">
+                    <span class="nav-account-avatar"></span>
+                    <span class="nav-account-name" id="accountName">Account</span>
+                    <svg class="nav-account-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="nav-account-menu" id="accountMenu">
+                    <div class="nav-account-head"><div class="nav-account-email" id="accountEmail"></div></div>
+                    <div class="nav-account-div"></div>
+                    <button class="nav-account-item" onclick="window.ReyandaTheme&&window.ReyandaTheme.openPanel();window.toggleAccount()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg> Appearance</button>
+                    <button class="nav-account-item" onclick="window.openSettings();window.toggleAccount()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</button>
+                    <button class="nav-account-item" onclick="window.signOut()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sign out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="rooms-panel" id="roomsPanel">
+        <div class="rooms-title">Rooms</div>
+        <a class="room-item current" href="./">
+            <span class="room-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M3 4h18l-7 8v7l-4-2v-5z"/></svg></span>
+            <span class="room-text"><span class="room-name">Systematic Review</span><span class="room-desc">Search, screen, extract, synthesise</span></span>
+            <span class="room-badge">Current</span>
+        </a>
+        <a class="room-item" href="https://reyanda.github.io/resource-shrimp/">
+            <span class="room-ico" style="background:linear-gradient(135deg,#ff7a60,#e0245e)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></span>
+            <span class="room-text"><span class="room-name">Resource Shrimp</span><span class="room-desc">Downloader &amp; library</span></span>
+        </a>
+        <a class="room-item ocs-room" href="https://reyanda.github.io/open-canvas-studio/" target="_blank" rel="noopener">
+            <span class="room-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="15" rx="2"/><path d="M6 14c2.5-4 7.5-4 10 0"/><path d="M11 5l3 3-5 5H6V9l5-5z"/></svg></span>
+            <span class="room-text"><span class="room-name">Open Canvas Studio</span><span class="room-desc">Create publication figures</span></span>
+        </a>
+    </div>
+
+    <div class="container">
+        <!-- Acquisition chrome kept (hidden) so the shared app.js never hits a
+             missing node; Systematic Review opens straight to the workspace. -->
+        <section class="hero" style="display:none">
+            <h1>Search strategy</h1>
+            <p>Build a PRESS-aligned, MeSH-grounded strategy.</p>
+        </section>
+
+        <div class="input-card" style="display:none">
+            <div class="input-row">
+                <textarea class="url-input" id="urlInput" rows="1"></textarea>
+                <button class="btn-primary" id="downloadBtn" onclick="window.startDownload()"><span class="btn-label">Download</span><div class="spinner"></div></button>
+            </div>
+            <div class="type-badge" id="typeBadge"><div class="type-icon" id="typeIcon"></div><div class="type-info"><div class="type-label" id="typeLabel"></div><div class="type-hint" id="typeHint"></div></div></div>
+            <div class="options" id="optionsPanel">
+                <div id="videoOptions"></div>
+                <div id="articleOptions" style="display:none"></div>
+            </div>
+        </div>
+
+        <div class="progress-section" id="progressSection">
+            <div class="progress-card">
+                <div class="phases"><div class="phase" id="phase1"><div class="phase-dot">1</div><span class="phase-label">Resolve</span></div><div class="phase" id="phase2"><div class="phase-dot">2</div><span class="phase-label">Fetch</span></div><div class="phase" id="phase3"><div class="phase-dot">3</div><span class="phase-label">Ready</span></div></div>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="stats"><div class="stat"><div class="stat-label">Progress</div><div class="stat-value" id="statProgress">0%</div></div><div class="stat"><div class="stat-label">Speed</div><div class="stat-value" id="statSpeed">—</div></div><div class="stat"><div class="stat-label">ETA</div><div class="stat-value" id="statEta">—</div></div><div class="stat"><div class="stat-label">Status</div><div class="stat-value" id="statStatus">Waiting</div></div></div>
+                <div class="paper-info" id="paperInfo"><div class="paper-title" id="paperTitle"></div><div class="paper-authors" id="paperAuthors"></div><div class="paper-meta"><span id="paperDoi"></span><span id="paperJournal"></span><span id="paperYear"></span></div></div>
+                <div class="status-bar" id="statusBar"><span class="status-dot"></span><span id="statusMsg">Initializing...</span></div>
+            </div>
+        </div>
+
+        <section class="library-view" id="libraryView" style="display:none">
+            <div class="library-head">
+                <h2>References</h2>
+                <p>Records sent to your sandbox from searches.</p>
+                <div class="drive-bar" id="driveBar" style="display:none"></div>
+                <div class="proj-bar" id="projBar"></div>
+                <input type="text" class="lib-search" id="libSearch" placeholder="Search your references..." oninput="window.searchLib(this.value)" autocomplete="off">
+                <div class="ask-panel" id="askPanel">
+                    <div class="ask-scope" id="askScope" style="display:none"></div>
+                    <div class="ask-row"><input type="text" class="ask-input" id="askInput" placeholder="Ask the AI about your references..." autocomplete="off" onkeydown="if(event.key==='Enter')window.askAI()"><button class="ask-btn" id="askBtn" onclick="window.askAI()">Ask</button></div>
+                    <div class="ask-answer" id="askAnswer" style="display:none"></div>
+                    <details class="ask-key"><summary>AI provider &amp; key</summary><div class="ask-key-body"><select id="askProvider" class="ask-select"><option value="">Auto / default</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="groq">Groq</option><option value="openrouter">OpenRouter</option><option value="deepseek">DeepSeek</option><option value="ollama">Ollama (local)</option></select><input type="password" id="askKey" class="ask-keyinput" placeholder="Your API key (optional, kept in this browser only)" autocomplete="off"></div></details>
+                </div>
+            </div>
+            <div class="lib-grid" id="libList"></div>
+            <div class="lib-empty" id="libEmpty" style="display:none">No references yet — build and run a search.</div>
+        </section>
+
+        <section class="review-view" id="reviewView" style="display:none">
+            <div class="library-head">
+                <h2>Search strategy</h2>
+                <p>PRISM framework (P·R·I·S·M·T·G·D — beyond PICO/PECO) → PRESS-aligned, MeSH-grounded strategies.</p>
+            </div>
+            <div class="sr-builder">
+                <div class="sr-concepts" id="srConcepts"></div>
+                <button class="sr-add" id="srAdd" onclick="window.addConcept()">+ Add facet</button>
+                <div id="srExcludeWrap" class="sr-exclude"></div>
+                <div class="sr-actions"><button class="drive-btn" id="srBuildBtn" onclick="window.buildStrategy()">Build strategy</button></div>
+                <details class="ask-key">
+                    <summary>Or paste a question (decompose with AI)</summary>
+                    <div class="sr-q-body">
+                        <textarea id="srQuestion" class="sr-q" placeholder="e.g. In children with severe acute malnutrition, does ready-to-use therapeutic food vs standard care improve recovery?"></textarea>
+                        <button class="drive-btn" onclick="window.buildFromQuestion()">Build from question</button>
+                    </div>
+                </details>
+                <div class="sr-msg" id="srMsg"></div>
+                <div class="sr-output" id="srOutput"></div>
+            </div>
+        </section>
+
+        <footer class="footer"><div class="footer-copy">Your references stay in your sandbox.</div></footer>
+    </div>
+
+    <!-- Settings Modal (AI providers + library access) -->
+    <div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)this.classList.remove('active')">
+        <div class="modal-box">
+            <div class="modal-header"><span class="modal-title">Settings</span><button class="modal-close" onclick="document.getElementById('settingsModal').classList.remove('active')">×</button></div>
+            <div class="modal-body">
+                <div class="set-section"><div class="set-label">Default AI provider</div><div class="set-row"><select id="setProvider" class="ask-select" onchange="window.onSettingsProviderChange()"></select><select id="setModel" class="ask-select"><option value="">Auto (default)</option></select></div><button class="drive-btn" onclick="window.saveSettings()">Save defaults</button></div>
+                <div class="set-section"><div class="set-label">Connected providers</div><div id="setConnected" class="set-connected"></div></div>
+                <div class="set-section"><div class="set-label">Add a provider (API key)</div><div class="prov-tiles" id="addProviderTiles"></div><div class="set-grid"><input id="addKey" class="ask-keyinput" type="password" placeholder="API key" autocomplete="off"><select id="addModel" class="ask-select"><option value="">Auto-detect</option></select><input id="addBase" class="ask-keyinput" placeholder="Base URL (custom only)" autocomplete="off" style="display:none"></div><div class="set-btn-row"><button class="drive-btn ghost" onclick="window.detectModels()">Detect models</button><button class="drive-btn" onclick="window.connectProvider()">Connect</button></div><div id="addMsg" class="set-msg"></div></div>
+                <div class="set-section"><div class="set-label">Library access (subscription papers)</div><div class="set-sub">Stored privately so the app can use your access — no external pop-ups. Open-access papers never need this.</div><div class="set-grid"><input id="accInstitution" class="ask-keyinput" placeholder="Institution / OpenAthens (optional)" autocomplete="off"><input id="accR4LUser" class="ask-keyinput" placeholder="Research4Life username" autocomplete="off"><input id="accR4LPass" class="ask-keyinput" type="password" placeholder="Research4Life password" autocomplete="off"></div><button class="drive-btn" onclick="window.saveAccess()">Save access</button><div id="accMsg" class="set-msg"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Systematic Review reuses the Resource Shrimp backend (shared search API).
+    window.API_BASE = 'https://resource-shrimp.onrender.com';
+    </script>
+    <script src="./app.js"></script>
+    <script>
+    // This product opens straight to the PRISM search-strategy workspace.
+    window.addEventListener('DOMContentLoaded', function () {
+        if (window.showReview) window.showReview();
+    });
+    </script>
+</body>
+</html>
